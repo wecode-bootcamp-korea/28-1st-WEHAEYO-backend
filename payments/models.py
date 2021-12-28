@@ -6,7 +6,7 @@ from users.models              import User
 
 # Create your models here.
 class Cart(models.Model):
-    quatity = models.IntegerField(validators=[MinValueValidator(1),
+    quantity = models.IntegerField(validators=[MinValueValidator(1),
                                               MaxValueValidator(99)])
     user    = models.ForeignKey(User, on_delete=CASCADE)
                                               

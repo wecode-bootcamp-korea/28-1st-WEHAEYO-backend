@@ -12,7 +12,7 @@ class Cart(models.Model):
 
 class Order(models.Model):
     payment_method = models.CharField(max_length=200)
-    total_price    = models.DecimalField(max_digits=60, decimal_places=2)
+    total_price    = models.DecimalField(max_digits=10, decimal_places=2)
     cart           = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
     class Meta:

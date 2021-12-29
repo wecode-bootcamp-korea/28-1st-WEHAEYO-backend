@@ -9,7 +9,7 @@ class Category(models.Model):
 
 class Restaurant(models.Model):
     name     = models.CharField(max_length=50)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         db_table = 'restaurants'

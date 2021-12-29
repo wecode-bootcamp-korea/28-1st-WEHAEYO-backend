@@ -20,7 +20,7 @@ class Review(models.Model):
 
 class Option(models.Model):
     name  = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=1000, decimal_places=2)
+    price = models.DecimalField(max_digits=65, decimal_places=2)
 
     class Meta:
         db_table = 'options'
@@ -36,7 +36,7 @@ class MenuType(models.Model):
 
 class Menu(models.Model):
     name       = models.CharField(max_length=50)
-    price      = models.DecimalField(max_digits=1000, decimal_places=2)
+    price      = models.DecimalField(max_digits=65, decimal_places=2)
     restaurant = models.ForeignKey(Restaurant, on_delete=CASCADE)
     options    = models.ManyToManyField(Option)
     carts      = models.ManyToManyField(Cart)
@@ -50,4 +50,4 @@ class ImageMenu(models.Model):
     menu = models.ForeignKey(Menu, on_delete=CASCADE)
 
     class Meta:
-        db_table = 'image_menus' 
+        db_table = 'image_menus'

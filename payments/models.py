@@ -8,15 +8,15 @@ from users.models              import User
 class Cart(models.Model):
     quantity = models.IntegerField(validators=[MinValueValidator(1),
                                               MaxValueValidator(99)])
-    user    = models.ForeignKey(User, on_delete=CASCADE)
+    user    = models.ForeignKey(User, on_delete=models.CASCADE)
                                               
     class Meta:
         db_table = 'carts'
 
 class Order(models.Model):
     payment_method = models.CharField(max_length=200)
-    total_price    = models.DecimalField(max_digits=1000, decimal_places=2)
-    cart           = models.ForeignKey(Cart,on_delete=CASCADE)
+    total_price    = models.DecimalField(max_digits=60, decimal_places=2)
+    cart           = models.ForeignKey(Cart,on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'orders' 

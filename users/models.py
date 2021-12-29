@@ -10,7 +10,7 @@ class User(models.Model):
     phone_number = models.CharField(max_length=50)
     created_at   = models.DateTimeField(auto_now_add=True)
     updated_at   = models.DateTimeField(auto_now=True)
-    wishilists   = models.ManyToManyField(Restaurant)
+    wishilists   = models.ManyToManyField(Restaurant, related_name="shopper")
 
     class Meta:
         db_table = 'users'

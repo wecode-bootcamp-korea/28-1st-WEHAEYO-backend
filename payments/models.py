@@ -1,14 +1,11 @@
 from django.db                 import models
-from django.core.validators    import MinValueValidator, MaxValueValidator
 from django.db.models.deletion import CASCADE
 
 from users.models              import User
 
-# Create your models here.
 class Cart(models.Model):
-    quantity = models.IntegerField(validators=[MinValueValidator(1),
-                                              MaxValueValidator(99)])
-    user    = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    user     = models.ForeignKey(User, on_delete=models.CASCADE)
                                               
     class Meta:
         db_table = 'carts'
@@ -16,7 +13,7 @@ class Cart(models.Model):
 class Order(models.Model):
     payment_method = models.CharField(max_length=200)
     total_price    = models.DecimalField(max_digits=60, decimal_places=2)
-    cart           = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart           = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'orders' 

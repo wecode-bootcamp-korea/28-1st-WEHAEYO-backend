@@ -6,7 +6,6 @@ from payments.models           import Cart
 from restaurants.models        import Restaurant
 from users.models              import User
 
-# Create your models here.
 class Review(models.Model):
     rating      = models.IntegerField(validators=[MinValueValidator(1),
                                                   MaxValueValidator(5)])
@@ -25,7 +24,6 @@ class Option(models.Model):
     class Meta:
         db_table = 'options'
 
-
 class MenuType(models.Model):
     name        = models.CharField(max_length=50)
     description = models.TextField(max_length=1000)
@@ -33,14 +31,13 @@ class MenuType(models.Model):
     class Meta:
         db_table = 'menu_types'
 
-
 class Menu(models.Model):
     name       = models.CharField(max_length=50)
     price      = models.DecimalField(max_digits=65, decimal_places=2)
     restaurant = models.ForeignKey(Restaurant, on_delete=CASCADE)
-    options    = models.ManyToManyField(Option)
-    carts      = models.ManyToManyField(Cart)
-    menu_types = models.ManyToManyField(MenuType)
+    options    = models.ManyToManyField(Option, related_name="extra_menu")
+    carts      = models.ManyToManyField(Cart, related_name="menu")
+    menu_types = models.ManyToManyField(MenuType, related_name="group_menu")
 
     class Meta:
         db_table = 'menus'

@@ -6,7 +6,7 @@ from django.views           import View
 from django.core.exceptions import ValidationError
 
 from .models      import User
-from .validations import is_email_valid, is_password_valid
+from .validations import is_valid_email, is_valid_password
 
 class SignupView(View):
     def post(self, request):
@@ -17,10 +17,10 @@ class SignupView(View):
             email        = data['email']
             phone_number = data['phone_number']
 
-            if not is_email_valid(email):
+            if not is_valid_email(email):
                 raise ValidationError('INVALID_EMAIL')
             
-            if not is_password_valid(password):
+            if not is_valid_password(password):
                 raise ValidationError('INVALID_PASSWORD')
                 
             if User.objects.filter(email=email).exists():

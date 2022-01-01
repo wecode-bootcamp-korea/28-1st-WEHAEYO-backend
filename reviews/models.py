@@ -9,7 +9,7 @@ class Review(models.Model):
     rating      = models.DecimalField(max_digits=2, decimal_places=1)
     updated_at  = models.DateTimeField(auto_now=True)
     description = models.TextField(max_length=1000)
-    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     restaurant  = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     class Meta:

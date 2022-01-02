@@ -4,8 +4,8 @@ from django.db.models.deletion import CASCADE
 from users.models              import User
 
 class Cart(models.Model):
-    quantity = models.IntegerField()
-    user     = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity     = models.IntegerField(default=0)
+    user         = models.ForeignKey(User, on_delete=models.CASCADE)
                                               
     class Meta:
         db_table = 'carts'

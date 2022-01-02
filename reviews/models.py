@@ -6,10 +6,10 @@ from restaurants.models        import Restaurant
 from users.models              import User
 
 class Review(models.Model):
-    rating      = models.IntegerField()
+    rating      = models.DecimalField(max_digits=2, decimal_places=1)
     updated_at  = models.DateTimeField(auto_now=True)
     description = models.TextField(max_length=1000)
-    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     restaurant  = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
     class Meta:
@@ -31,7 +31,7 @@ class MenuType(models.Model):
 
 class Menu(models.Model):
     name       = models.CharField(max_length=50)
-    price      = models.DecimalField(max_digits=65, decimal_places=2)
+    price      = models.DecimalField(max_digits=10, decimal_places=2)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     options    = models.ManyToManyField(Option, related_name="extra_menu")
     carts      = models.ManyToManyField(Cart, related_name="menu")

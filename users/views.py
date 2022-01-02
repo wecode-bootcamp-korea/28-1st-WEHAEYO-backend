@@ -1,5 +1,8 @@
 import json
 import bcrypt
+import jwt
+from datetime     import datetime, timedelta
+from json.decoder import JSONDecodeError
 
 from django.http            import JsonResponse
 from django.views           import View
@@ -7,10 +10,12 @@ from django.core.exceptions import ValidationError
 
 from .models      import User
 from .validations import is_valid_email, is_valid_password
+from my_settings  import SECRET_KEY, ALGORITHM
 
 class SignupView(View):
     def post(self, request):
         data = json.loads(request.body)
+
         try:
             name         = data['name']
             password     = data['password']
@@ -42,3 +47,40 @@ class SignupView(View):
 
         except ValidationError as e:
             return JsonResponse({"message": e.message}, status=400)
+
+        except JSONDecodeError:
+            return JsonResponse({'message':'INVALID_JSON'}, status=400)
+
+class LoginView(View):
+    def post(self, request):
+        data = json.loads(request.body) 
+        
+        try:
+            email    = data['email']
+            password = data['password']
+
+            if not User.objects.filter(email=email).exists():
+                raise ValidationError('INVALID_USER')
+
+            user_info = User.objects.get(email=email)
+
+            if not bcrypt.checkpw(password.encode('utf-8'), user_info.password.encode('utf-8')):
+                raise ValidationError('INVALID_PASSWORD')
+            
+            payload = {
+                "user_id" : user_info.id,
+                "exp"     : datetime.now() + timedelta(days=3),
+                "iat"     : datetime.now()
+            }
+            token = jwt.encode(payload, SECRET_KEY, ALGORITHM)
+            
+            return JsonResponse({'token' : token}, status=200)
+
+        except KeyError:
+            return JsonResponse({"message": "KEY_ERROR"}, status=400)
+
+        except ValidationError as e:
+            return JsonResponse({"message": e.message}, status=401)
+
+        except JSONDecodeError:
+            return JsonResponse({'message':'INVALID_JSON'}, status=400)

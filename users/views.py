@@ -9,9 +9,9 @@ from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError
 
-from .models      import User
+from .models           import User
 from utils.validations import is_valid_email, is_valid_password
-from my_settings  import SECRET_KEY, ALGORITHM
+from my_settings       import SECRET_KEY, ALGORITHM
 
 class SignupView(View):
     def post(self, request):

@@ -1,5 +1,5 @@
-from django.http import JsonResponse
-from django.views import View
+from django.http        import JsonResponse
+from django.views       import View
 
 from restaurants.models import Category, ImageCategory
 
@@ -15,5 +15,6 @@ class CategoryMainView(View):
                     'image_url':images.url,
                 })
             return JsonResponse({'RESULT' : food_category}, status=200) 
+            
         except:
-            return JsonResponse({'Message' : 'FAILED'}, status=400) 
+            return JsonResponse({'Message' : 'FAILED'}, status=400)

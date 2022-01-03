@@ -2,21 +2,23 @@ import jwt
 
 from django.http import JsonResponse
 
-from .models     import User
+from ..users.models     import User
 from my_settings import SECRET_KEY, ALGORITHM
 
 def login_decorator(func):
     def wrapper(self, request, *args, **kwargs):
     
         if "Authorization" not in request.headers:
-            return JsonResponse({"error_code":"INVALID_LOGIN"}, status=401)
+            return JsonResponse({"error_code":"KEY_ERROR_AUTHORIZATION"}, status=401)
         
         token = request.headers["Authorization"] 
 
         try:
             data = jwt.decode(token, SECRET_KEY, ALGORITHM)
 
-            user = User.objects.get(id = data["id"])
+            id = data["id"]
+
+            user = User.objects.get(id=id)
             request.user = user 
 
         except jwt.InvalidTokenError:

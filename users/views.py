@@ -1,5 +1,6 @@
 import json
 import bcrypt
+
 import jwt
 from datetime     import datetime, timedelta
 from json.decoder import JSONDecodeError
@@ -49,7 +50,7 @@ class SignupView(View):
             return JsonResponse({"message": e.message}, status=400)
 
         except JSONDecodeError:
-            return JsonResponse({'message':'INVALID_JSON'}, status=400)
+            return JsonResponse({'message':'INVALID_JSON_FORMAT'}, status=400)
 
 class LoginView(View):
     def post(self, request):
@@ -64,11 +65,13 @@ class LoginView(View):
 
             user_info = User.objects.get(email=email)
 
-            if not bcrypt.checkpw(password.encode('utf-8'), user_info.password.encode('utf-8')):
+            hashed_password = user_info.password.encode("utf-8")
+
+            if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 raise ValidationError('INVALID_PASSWORD')
             
             payload = {
-                "user_id" : user_info.id,
+                "id" : user_info.id,
                 "exp"     : datetime.now() + timedelta(days=3),
                 "iat"     : datetime.now()
             }
@@ -83,4 +86,4 @@ class LoginView(View):
             return JsonResponse({"message": e.message}, status=401)
 
         except JSONDecodeError:
-            return JsonResponse({'message':'INVALID_JSON'}, status=400)
+            return JsonResponse({'message':' INVALID_JSON_FORMAT'}, status=400)

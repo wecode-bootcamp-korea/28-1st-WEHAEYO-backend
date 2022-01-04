@@ -7,12 +7,10 @@ class CategoryMainView(View):
     def get(self, request):
         try:
             categories    = Category.objects.all()
-            food_category = [
-                {
+            food_category = [{
                     'category_name': category.name,
                     'image_url'    : ImageCategory.objects.get(category=category).url,
-                }for category in categories
-            ]
+                }for category in categories]
                 
             return JsonResponse({'result' : food_category}, status=200) 
             

@@ -4,7 +4,8 @@ from django.http        import JsonResponse
 from django.views       import View
 from json.decoder       import JSONDecodeError
 
-from restaurants.models import Category, ImageCategory
+from restaurants.models import Category, ImageCategory, Restaurant, ImageRestaurant
+from reviews.models     import Review
 
 class CategoryMainView(View):
     def get(self, request):
@@ -22,3 +23,8 @@ class CategoryMainView(View):
             
         except:
             return JsonResponse({'message' : 'FAILED'}, status=400)
+
+class ListPageView(View):
+    def get(self, request):
+        try:
+            rating_sum = request.GET.get('rating')

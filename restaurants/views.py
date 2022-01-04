@@ -1,5 +1,8 @@
+import json
+
 from django.http        import JsonResponse
 from django.views       import View
+from json.decoder       import JSONDecodeError
 
 from restaurants.models import Category, ImageCategory
 
@@ -12,7 +15,10 @@ class CategoryMainView(View):
                     'image_url'    : ImageCategory.objects.get(category=category).url,
                 }for category in categories]
                 
-            return JsonResponse({'result' : food_category}, status=200) 
+            return JsonResponse({'result' : food_category}, status=200)
+
+        except JSONDecodeError:
+            return JsonResponse({'message' : 'JSON_DECODE_ERROR'}, status=400) 
             
         except:
-            return JsonResponse({'Message' : 'FAILED'}, status=400)
+            return JsonResponse({'message' : 'FAILED'}, status=400)

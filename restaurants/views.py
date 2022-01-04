@@ -27,4 +27,8 @@ class CategoryMainView(View):
 class ListPageView(View):
     def get(self, request):
         try:
-            rating_sum = request.GET.get('rating')
+            category_name = request.GET['category']
+            sorts = request.GET.get('sort','character')
+            category = Category.objects.get(name=category_name)
+            restaurants = category.restaurant_set.all()
+            ratings

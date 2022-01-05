@@ -15,7 +15,7 @@ class DetailView(View):
             # 리뷰 구현칸
             signature_menu  = MenuType.objects.get(id=1)
             signature_menus = signature_menu.group_menu.all()
-            season_menu = MenuType.objects.get(id=2)
+            season_menu = MenuType.objects.get(id=2)    
             season_menus = season_menu.group_menu.all()
             other_menu = MenuType.objects.get(id=3)
             other_menus = other_menu.group_menu.all()

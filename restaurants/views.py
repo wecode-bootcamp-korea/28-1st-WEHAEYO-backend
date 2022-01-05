@@ -1,10 +1,12 @@
 import json
 
 from django.db.models.aggregates import Avg, Count
+from django.db.models            import Q
 
 from django.http                 import JsonResponse
 from django.views                import View
 from json.decoder                import JSONDecodeError
+from django.core.exceptions      import FieldError
 
 from restaurants.models          import Category, ImageCategory, Restaurant, ImageRestaurant
 
@@ -25,25 +27,39 @@ class CategoryMainView(View):
         except:
             return JsonResponse({'message' : 'FAILED'}, status=400)
 
-class ListPageView(View):
+class RestaurantListView(View):
     def get(self, request):
         try:
-            category_name = request.GET['category']
-            sorts         = request.GET.get('sort','name')
-            category      = Category.objects.get(name=category_name)
-            restaurants   = Restaurant\
-                          .objects\
-                          .annotate(avg_rating=Avg('review__rating'), review_count=Count('review'))\
-                          .filter(category=category)\
-                          .order_by(sorts)
+            category_dict = {
+                'korean'   : '한식',
+                'chinese'  : '중식',
+                'japanese' : '일식'      
+            }
+            category_name   = request.GET.get('category',None)
+            restaurant_name = request.GET.get('name',None)
+            sorts           = request.GET.get('sort','name')
+
+            q = Q()
+
+            if category_name:
+                q &= Q(name=category_dict[category_name])
+
+            category      = Category.objects.filter(q)
+            restaurants   = Restaurant.objects\
+                            .annotate(avg_rating=Avg('review__rating'), review_count=Count('review'))\
+                            .filter(category__in=category, ).order_by(sorts)
+            print(restaurants.count(), restaurants[0].avg_rating)
+
+            round_avg = lambda mean_value : round(mean_value,1) if mean_value else mean_value
+
             result = [{
                 'id'      : restaurant.id,
                 'name'    : restaurant.name,
-                'rating'  : restaurant.avg_rating,
+                'rating'  : round_avg(restaurant.avg_rating),
                 'reviews' : restaurant.review_count,
                 'image'   : restaurant.imagerestaurant_set.first().url,
             }for restaurant in restaurants]
-
+            
             return JsonResponse({'result' : result}, status=200)
         
         except JSONDecodeError:
@@ -55,5 +71,5 @@ class ListPageView(View):
         except KeyError:
             return JsonResponse({'message' : 'KEYERROR'}, status=401)
 
-        except:
-            return JsonResponse({'message' : 'FAILED'}, status=400)
+        except FieldError:
+            return JsonResponse({'message' : 'Bad_Request'}, status=404)

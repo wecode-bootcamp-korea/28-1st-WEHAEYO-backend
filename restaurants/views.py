@@ -5,7 +5,7 @@ from django.views                import View
 from django.db.models.aggregates import Avg, Count
 
 from .models            import Restaurant
-from reviews.models     import MenuType, Review, Menu
+from reviews.models     import Menu
 from restaurants.models import Category, ImageCategory, Restaurant
 
 class CategoryMainView(View):

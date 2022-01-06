@@ -51,12 +51,10 @@ class RestaurantListView(View):
                             .filter(category__in=category, ).order_by(sorts)
             print(restaurants.count(), restaurants[0].avg_rating)
 
-            round_avg = lambda mean_value : round(mean_value,1) if mean_value else mean_value
-
             result = [{
                 'id'      : restaurant.id,
                 'name'    : restaurant.name,
-                'rating'  : round_avg(restaurant.avg_rating),
+                'rating'  : round(restaurant.avg_rating, 1) if restaurant.avg_rating else 0,
                 'reviews' : restaurant.review_count,
                 'image'   : restaurant.imagerestaurant_set.first().url,
             }for restaurant in restaurants]
@@ -74,33 +72,3 @@ class RestaurantListView(View):
 
         except FieldError:
             return JsonResponse({'message' : 'Bad_Request'}, status=404)
-
-class RestaurantDetailView(View):       
-    def get(self, request, restaurant_id):
-        try:
-            restaurant = Restaurant.objects.get(id=restaurant_id)
-            avg_rating = restaurant.review_set.aggregate(Avg('rating'))['rating__avg']
-            round_avg  = lambda mean_value : round(mean_value,1) if mean_value else 0
-            result = {
-                "id"             : restaurant.id,
-                "name"           : restaurant.name,
-                "restaurant_img" : restaurant.imagerestaurant_set.first().url,
-                "phone"          : restaurant.phone,
-                "address"        : restaurant.address,
-                "rating"         : round_avg(avg_rating),
-                "category"      : [{
-                    "category_id"   : menu_type.id,
-                    "category_name" : menu_type.name,
-                    "food": [{
-                        "id"    : menu.id,
-                        "name"  : menu.name,
-                        "price" : int(menu.price),
-                        "image" : menu.imagemenu_set.first().url
-                        } for menu in menu_type.group_menu.filter(restaurant=restaurant)]
-                    }for menu_type in restaurant.menutype_set.all()]
-                }
-                
-            return JsonResponse({"restaurants_detail": result}, status=200)
-        
-        except Restaurant.DoesNotExist:
-            return JsonResponse({"message": "invalid_restaurant"}, status=404)

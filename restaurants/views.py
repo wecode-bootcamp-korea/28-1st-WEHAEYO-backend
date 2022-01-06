@@ -80,7 +80,7 @@ class RestaurantDetailView(View):
         try:
             restaurant = Restaurant.objects.get(id=restaurant_id)
             avg_rating = restaurant.review_set.aggregate(Avg('rating'))['rating__avg']
-            round_avg = lambda mean_value : round(mean_value,1) if mean_value else 0
+            round_avg  = lambda mean_value : round(mean_value,1) if mean_value else 0
             result = {
                 "id"             : restaurant.id,
                 "name"           : restaurant.name,

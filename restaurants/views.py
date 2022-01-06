@@ -2,7 +2,7 @@ from json.decoder import JSONDecodeError
 
 from django.http                 import JsonResponse
 from django.views                import View
-from django.db.models.aggregates import Avg, Count
+from django.db.models.aggregates import Avg
 
 from .models            import Restaurant
 from reviews.models     import Menu

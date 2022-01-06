@@ -35,8 +35,8 @@ class RestaurantListView(View):
                 'chinese'  : '중식',
                 'japanese' : '일식'      
             }
-            category_name   = request.GET.get('category',None)
-            restaurant_name = request.GET.get('name',None)
+            category_name   = request.GET.get('category', None)
+            restaurant_name = request.GET.get('name', None)
             sorts           = request.GET.get('sort','name')
 
             q = Q()

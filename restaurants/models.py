@@ -8,8 +8,10 @@ class Category(models.Model):
         db_table = 'categories' 
 
 class Restaurant(models.Model):
-    name     = models.CharField(max_length=50)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    name      = models.CharField(max_length=50)
+    category  = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    phone     = models.CharField(max_length=100, null=True)
+    address   = models.CharField(max_length=1000, null=True)
 
     class Meta:
         db_table = 'restaurants'

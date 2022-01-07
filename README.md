@@ -1,6 +1,6 @@
 # WEHAEYO
 
-### [WEHAEYO 사이트]('aws 배포후 작성 예정')
+### [WEHAEYO 사이트]
 
 ---
 

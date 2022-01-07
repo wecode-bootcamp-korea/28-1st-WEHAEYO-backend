@@ -74,30 +74,32 @@ class RestaurantListView(View):
             return JsonResponse({'message' : 'Bad_Request'}, status=404)
 
 
-class RestaurantDetailView(View):
+class RestaurantDetailView(View):       
     def get(self, request, restaurant_id):
         try:
-            restaurant        = Restaurant.objects.get(id = restaurant_id)
-            restaurant.rating = round(float(restaurant.review_set.aggregate(Avg('rating'))['rating__avg']),1)
-
+            restaurant = Restaurant.objects.get(id=restaurant_id)
+            avg_rating = restaurant.review_set.aggregate(Avg('rating'))['rating__avg']
+            
             result = {
                 "id"             : restaurant.id,
                 "name"           : restaurant.name,
                 "restaurant_img" : restaurant.imagerestaurant_set.first().url,
-                "rating"         : restaurant.rating,
-                "menu_type"      : [{
-                    "menu_type_id"   : menu_type.id,
-                    "menu_type_name" : menu_type.name,
+                "phone"          : restaurant.phone,
+                "address"        : restaurant.address,
+                "rating"         : round(avg_rating, 1) if avg_rating else 0,
+                "category"      : [{
+                    "category_id"   : menu_type.id,
+                    "category_name" : menu_type.name,
                     "food": [{
                         "id"    : menu.id,
                         "name"  : menu.name,
                         "price" : int(menu.price),
                         "image" : menu.imagemenu_set.first().url
-                    } for menu in Menu.objects.filter(restaurant=restaurant)]
-                }for menu_type in restaurant.menutype_set.all()]
-            }
-            
+                        } for menu in menu_type.group_menu.filter(restaurant=restaurant)]
+                    }for menu_type in restaurant.menutype_set.all()]
+                }
+                
             return JsonResponse({"restaurants_detail": result}, status=200)
-
+        
         except Restaurant.DoesNotExist:
-            return JsonResponse({"message":"Restaurant_DoesNotExist"}, status=404)
+            return JsonResponse({"message": "invalid_restaurant"}, status=404)
